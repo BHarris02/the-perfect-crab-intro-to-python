@@ -26,16 +26,13 @@
 # This is getting really challenging now — and is entirely optional. Don't
 # forget about your assessment!
 
-def play_game():
+def play_game(board_size: int = 5):
 
-  board = [
-    [".", ".", "."],
-    [".", ".", "."],
-    [".", ".", "."]
-  ]
+  board: list = build_board(board_size)
+  groups_to_check: list = create_groups_to_check(board_size)
   player = "X"
 
-  while not is_game_over(board) and not is_board_full(board):
+  while not is_game_over(board, groups_to_check) and not is_board_full(board):
     print(print_board(board))
     print("It's " + player + "'s turn.")
 
@@ -61,10 +58,48 @@ def play_game():
 
   print(print_board(board))
 
-  if is_game_over(board):
+  if is_game_over(board, groups_to_check):
     print("Game over!")
   elif is_board_full(board):
     print("It's a draw!")
+
+"""
+Function to dynamically build game board based on user-specified parameter
+E.g. board_size = 5 will result in a 5x5 board
+"""
+def build_board(board_size: int) -> list:
+  return [ ["."] * board_size for _ in range(board_size) ]
+
+"""
+Return list of groups to check for a win
+"""
+def create_groups_to_check(board_size: int) -> list:
+  groups = []   #groups to check for win
+
+  for row in range(board_size):     #add rows
+    groups.append([(row, col) for col in range(board_size)])
+
+  for col in range(board_size):     #add columns
+    groups.append([(row, col) for row in range(board_size)])
+
+  #add diagonals
+  groups.append([(i, i) for i in range(board_size)])
+  groups.append([(i, board_size - 1 - i) for i in range(board_size)])
+
+  return groups
+
+
+def is_game_over(board: list, groups_to_check: list) -> bool:
+  # We go through our groups
+  for group in groups_to_check:
+    # If any of them are empty, they're clearly not a winning row, so we skip
+    # them.
+    if is_group_complete(board, group[0], group[1], group[2]):
+      if are_all_cells_the_same(board, group[0], group[1], group[2]):
+        return True # We found a winning row!
+        # Note that return also stops the function
+  return False # If we get here, we didn't find a winning row
+
 
 """
 Utility function to check if board is full - check for draw
@@ -82,7 +117,6 @@ def print_board(board):
 def make_move(board, row, column, player):
   board[row][column] = player
   return board
-
 
 # This function will extract three cells from the board
 def get_cells(board, coord_1, coord_2, coord_3):
@@ -104,34 +138,7 @@ def are_all_cells_the_same(board, coord_1, coord_2, coord_3):
   cells = get_cells(board, coord_1, coord_2, coord_3)
   return cells[0] == cells[1] and cells[1] == cells[2]
 
-# We'll make a list of groups to check:
-
-groups_to_check = [
-  # Rows
-  [(0, 0), (0, 1), (0, 2)],
-  [(1, 0), (1, 1), (1, 2)],
-  [(2, 0), (2, 1), (2, 2)],
-  # Columns
-  [(0, 0), (1, 0), (2, 0)],
-  [(0, 1), (1, 1), (2, 1)],
-  [(0, 2), (1, 2), (2, 2)],
-  # Diagonals
-  [(0, 0), (1, 1), (2, 2)],
-  [(0, 2), (1, 1), (2, 0)]
-]
-
-def is_game_over(board):
-  # We go through our groups
-  for group in groups_to_check:
-    # If any of them are empty, they're clearly not a winning row, so we skip
-    # them.
-    if is_group_complete(board, group[0], group[1], group[2]):
-      if are_all_cells_the_same(board, group[0], group[1], group[2]):
-        return True # We found a winning row!
-        # Note that return also stops the function
-  return False # If we get here, we didn't find a winning row
 
 # And test it out:
-
 print("Game time!")
 play_game()
