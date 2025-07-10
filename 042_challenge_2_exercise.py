@@ -27,24 +27,38 @@
 # forget about your assessment!
 
 def play_game():
+
   board = [
     [".", ".", "."],
     [".", ".", "."],
     [".", ".", "."]
   ]
   player = "X"
+
   while not is_game_over(board):
     print(print_board(board))
     print("It's " + player + "'s turn.")
+
     # `input` asks the user to type in a string
     # We then need to convert it to a number using `int`
-    row = int(input("Enter a row: "))
-    column = int(input("Enter a column: "))
+
+    while True:   #continually ask for input until valid move made
+
+      row = int(input("Enter a row: "))
+      column = int(input("Enter a column: "))
+
+      if board[row][column] != ".":
+        print("Spot is already taken, please choose another")
+      else:
+        break
+
     board = make_move(board, row, column, player)
+
     if player == "X":
       player = "O"
     else:
       player = "X"
+
   print(print_board(board))
   print("Game over!")
 
