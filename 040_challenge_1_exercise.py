@@ -27,8 +27,19 @@ from lib.helpers import check_that_these_are_equal
 print("")
 print("Function: report_long_words")
 
-def report_long_words(words):
-  pass
+"""
+Return a string report of words with length greater than 10 characters without hyphens
+Words greater than 10 characters (without hypen) are shortened and trailing ... is appended
+"""
+def report_long_words(words: list) -> str:
+
+  long_words = [
+    word if len(word) <= 15 else word[:15] + "..."
+    for word in words
+    if len(word) > 10 and "-" not in word
+  ]
+
+  return "These words are quite long: " + ", " .join(long_words)
 
 check_that_these_are_equal(
   report_long_words([
