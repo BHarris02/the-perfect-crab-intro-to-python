@@ -35,7 +35,7 @@ def play_game():
   ]
   player = "X"
 
-  while not is_game_over(board):
+  while not is_game_over(board) and not is_board_full(board):
     print(print_board(board))
     print("It's " + player + "'s turn.")
 
@@ -60,7 +60,17 @@ def play_game():
       player = "X"
 
   print(print_board(board))
-  print("Game over!")
+
+  if is_game_over(board):
+    print("Game over!")
+  elif is_board_full(board):
+    print("It's a draw!")
+
+"""
+Utility function to check if board is full - check for draw
+"""
+def is_board_full(board: list) -> bool:
+  return all(cell != "." for row in board for cell in row)
 
 def print_board(board):
   formatted_rows = []
